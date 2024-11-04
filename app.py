@@ -1,4 +1,5 @@
 import streamlit as st
+import torch
 from transformers import pipeline
 from sentence_transformers import SentenceTransformer
 from sentence_transformers import util
@@ -12,16 +13,17 @@ def compute_similarity(sentences1, sentences2):
     cosine_scores = util.cos_sim(embeddings1,embeddings2)
     return cosine_scores
 
-# Initialize translation pipelines for each language
-translation_pipelines = {
-    "French": pipeline("translation_en_to_fr"),
-    "German": pipeline("translation_en_to_de"),
 
-}
+
 
 # Initialize other pipelines
-summarizer = pipeline("summarization")
-classifier = pipeline("zero-shot-classification")
+summarizer = pipeline(task="summarization",
+                      model="facebook/bart-large-cnn"
+                      )
+classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+translator = pipeline(task="translation",
+                      model="facebook/nllb-200-distilled-600M"
+                      ) 
 
 # Set up the Streamlit app
 st.title("NLP Task Switcher")
@@ -33,11 +35,17 @@ task = st.sidebar.selectbox("Choose a task:", ["Translate", "Summarize", "Classi
 if task == "Translate":
     st.subheader("Translation")
     text_to_translate = st.text_area("Enter text to translate:")
+    # Initialize translation pipelines for each language
+    translation_pipelines = {
+    "French": translator(text_to_translate,src_lang="eng_Latn",tgt_lang="fra_Latn"),
+    "Hindi": translator(text_to_translate,src_lang="eng_Latn",tgt_lang="hin_Deva"),
+
+}
     target_language = st.selectbox("Select target language:", list(translation_pipelines.keys()))
     
     if st.button("Translate"):
         if text_to_translate:
-            translation = translation_pipelines[target_language](text_to_translate, max_length=40)[0]['translation_text']
+            translation = translation_pipelines[target_language][0]['translation_text']
             st.write("Translation to {}: {}".format(target_language, translation))
         else:
             st.warning("Please enter text to translate.")
