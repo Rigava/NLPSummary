@@ -11,10 +11,11 @@ summarizer = pipeline(task="summarization",
                       model="facebook/bart-large-cnn",
                       torch_dtype=torch.bfloat16
                       )
-# classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-# translator = pipeline(task="translation",
-#                       model="facebook/nllb-200-distilled-600M"
-#                       ) 
+classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli",torch_dtype=torch.bfloat16)
+translator = pipeline(task="translation",
+                      model="facebook/nllb-200-distilled-600M",
+                      torch_dtype=torch.bfloat16
+                      ) 
 
 # Set up the Streamlit app
 st.title("NLP Task Switcher")
