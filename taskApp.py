@@ -8,7 +8,8 @@ from transformers import pipeline
 
 # Initialize other pipelines
 summarizer = pipeline(task="summarization",
-                      model="facebook/bart-large-cnn"
+                      model="facebook/bart-large-cnn",
+                      torch_dtype=torch.bfloat16
                       )
 # classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 # translator = pipeline(task="translation",
