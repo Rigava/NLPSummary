@@ -1,3 +1,7 @@
 transformers
 sentence-transformers
 torch
+inflect
+timm
+youtube_transcript_api
+gradio

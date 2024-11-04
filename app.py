@@ -14,7 +14,7 @@ def compute_similarity(sentences1, sentences2):
     return cosine_scores
 
 
-
+# https://github.com/facebookresearch/flores/blob/main/flores200/README.md#languages-in-flores-200
 
 # Initialize other pipelines
 summarizer = pipeline(task="summarization",
