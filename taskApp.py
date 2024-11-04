@@ -1,7 +1,6 @@
 import streamlit as st
 import torch
 from transformers import pipeline
-from sentence_transformers import util
 
 
 
