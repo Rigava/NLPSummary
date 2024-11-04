@@ -1,4 +1,6 @@
 from transformers import pipeline
+# https://github.com/espeak-ng/espeak-ng/releases
+# https://www.youtube.com/watch?v=hBrhW8cDAEM&t=0s
 
 narrator = pipeline("text-to-speech",
                     model="kakao-enterprise/vits-ljs")
