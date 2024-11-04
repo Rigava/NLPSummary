@@ -1,5 +1,16 @@
 import streamlit as st
 from transformers import pipeline
+from sentence_transformers import SentenceTransformer
+from sentence_transformers import util
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+def compute_similarity(sentences1, sentences2):
+    # Encode the lists to get embeddings
+    embeddings1 = model.encode(sentences1, convert_to_tensor=True)
+    embeddings2 = model.encode(sentences2, convert_to_tensor=True)
+    # Compute cosine similarity
+    cosine_scores = util.cos_sim(embeddings1,embeddings2)
+    return cosine_scores
 
 # Initialize translation pipelines for each language
 translation_pipelines = {
@@ -17,7 +28,7 @@ st.title("NLP Task Switcher")
 st.sidebar.title("Select Task")
 
 # Create a sidebar to select the task
-task = st.sidebar.selectbox("Choose a task:", ["Translate", "Summarize", "Classify"])
+task = st.sidebar.selectbox("Choose a task:", ["Translate", "Summarize", "Classify","Find Similarity"])
 
 if task == "Translate":
     st.subheader("Translation")
@@ -52,3 +63,22 @@ elif task == "Classify":
             st.write("Classification:", classification)
         else:
             st.warning("Please enter text to classify.")
+
+elif task == "Find Similarity":
+    st.subheader("Find Similarity Between Two Lists")
+    list1_input = st.text_area("Enter the first list (comma-separated):")
+    list2_input = st.text_area("Enter the second list (comma-separated):")
+    
+    if st.button("Find Similarity"):
+        if list1_input and list2_input:
+            list1 = [item.strip() for item in list1_input.split(",")]
+            list2 = [item.strip() for item in list2_input.split(",")]
+            similarities = compute_similarity(list1, list2)
+            for i in range(len(list1)):
+                st.write("Similarity between {} \t\t and  {} \t\t Score: {:.4f}".format(list1[i],
+                                                 list2[i],
+                                                 similarities[i][i]))
+        else:
+            st.warning("Please enter both lists to compare.")
+# The dog plays in the garden, A woman watches TV, The new movie is so great
+# The cat sits outside, A man is playing guitar, The movies are awesome
